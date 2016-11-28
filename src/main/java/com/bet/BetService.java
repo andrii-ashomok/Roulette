@@ -36,12 +36,40 @@ public interface BetService {
         return Objects.nonNull(lines) && !lines.isEmpty();
     }
 
+    /**
+     * Method wait while players input bets.
+     * After player input his bet he needs to push ENTER button.
+     * If player wants to exit from the game, he needs to write any of key words:
+     * stop, exit, quit
+     */
     void startToTakeABet();
 
+    /**
+     * 1. Read players data from input file name, if file name is null or empty
+     * it uses default file, check application.properties to find bonus.default.input.file.path.
+     * Input file needs to contain: player name
+     * or optionality it can contains additional values like: total win and total bet
+     * that split by comma.
+     * 2. Method validates data by lines;
+     * 3. Method converts lines into Player.class objects;
+     * 4. Method saves players into player cache;
+     * @param fileName - path to file
+     */
     void initInputData(String fileName);
 
+    /**
+     * Check that player cache is available after input file read
+     * @return - <b>true</b> - player cache initialized <b>successfully</b>,
+     * <b>false</b> - player cache initialize <b>failed</b>;
+     */
     boolean isPlayersInitializedSuccess();
 
+    /**
+     * Method check if the line from inputted file could be transform into Bet.class object;
+     * @param strBet - line from inputted file
+     * @return - <b>true</b> - line can be transform into Bet.class object;
+     * <b>false</b> - line is not valid;
+     */
     boolean isBetValid(String[] strBet);
 
 }

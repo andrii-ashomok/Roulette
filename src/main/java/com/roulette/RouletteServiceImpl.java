@@ -23,17 +23,17 @@ public class RouletteServiceImpl implements RouletteService {
 
     @Override
     public void scheduleRoulette() {
-        int random = ThreadLocalRandom.current().nextInt(0, BET_SIZE);
-        final WonBet wonBet = new WonBet(random);
+        Set<Bet> bets = playerService.getAndRemoveAllBets();
+        if (bets.isEmpty())
+            return;
 
         if (playerService.getAllPlayers().isEmpty()) {
             System.err.println("No players registered in the game");
             return;
         }
 
-        Set<Bet> bets = playerService.getAndRemoveAllBets();
-        if (bets.isEmpty())
-            return;
+        int random = ThreadLocalRandom.current().nextInt(0, BET_SIZE);
+        final WonBet wonBet = new WonBet(random);
 
         bets.forEach(b -> isBetWon(b, wonBet));
         System.out.println("=========================");
