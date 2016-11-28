@@ -6,18 +6,18 @@ package com.user;
 public class Player {
 
     private String userName;
-    private short bet;
-    private short amount;
+    private int totalBet;
+    private int totalWin;
 
 
     public Player(String userName) {
         this.userName = userName;
     }
 
-    public Player(String userName, short amount, short bet) {
+    public Player(String userName, int totalWin, int totalBet) {
         this.userName = userName;
-        this.bet = bet;
-        this.amount = amount;
+        this.totalBet = totalBet;
+        this.totalWin = totalWin;
     }
 
     public String getUserName() {
@@ -28,20 +28,20 @@ public class Player {
         this.userName = userName;
     }
 
-    public short getBet() {
-        return bet;
+    public int getTotalBet() {
+        return totalBet;
     }
 
-    public void setBet(short bet) {
-        this.bet = bet;
+    public void setTotalBet(int totalBet) {
+        this.totalBet = totalBet;
     }
 
-    public short getAmount() {
-        return amount;
+    public int getTotalWin() {
+        return totalWin;
     }
 
-    public void setAmount(short amount) {
-        this.amount = amount;
+    public void setTotalWin(int totalWin) {
+        this.totalWin = totalWin;
     }
 
     @Override

@@ -21,6 +21,9 @@ public class BetServiceImpl implements BetService {
     @Value("${regular.default.input.file.path}")
     private String defaultFile;
 
+    @Value("${bonus.default.input.file.path}")
+    private String bonusFile;
+
     public void setPlayerService(PlayerService playerService) {
         this.playerService = playerService;
     }
@@ -31,7 +34,7 @@ public class BetServiceImpl implements BetService {
         watch.start();
 
         if (Objects.isNull(fileName) || fileName.isEmpty())
-            fileName = defaultFile;
+            fileName = bonusFile;
 
         try {
 
@@ -58,13 +61,13 @@ public class BetServiceImpl implements BetService {
                             try {
 
                                 if (!"".equals(user[1]))
-                                    player.setAmount(Float.valueOf(user[1])
-                                            .shortValue());
+                                    player.setTotalWin(Float.valueOf(user[1])
+                                            .intValue());
 
 
                                 if (!"".equals(user[2]))
-                                    player.setBet(Float.valueOf(user[2])
-                                            .shortValue());
+                                    player.setTotalBet(Float.valueOf(user[2])
+                                            .intValue());
 
                             } catch (NumberFormatException e) {
                                 System.err.println("Player has incorrect data: " + s
@@ -112,7 +115,7 @@ public class BetServiceImpl implements BetService {
             String[] strBet = line.split(BET_SPLIT);
             if (isBetValid(strBet)) {
 
-                Bet bet = new Bet(strBet[0], strBet[1], Short.valueOf(strBet[2]));
+                Bet bet = new Bet(strBet[0], strBet[1], Float.valueOf(strBet[2]).intValue());
                 playerService.addBet(bet);
 
             }
@@ -147,7 +150,7 @@ public class BetServiceImpl implements BetService {
         }
 
         try {
-            Float.valueOf(strBet[2]).shortValue();
+            Float.valueOf(strBet[2]).intValue();
         } catch (NumberFormatException e) {
             System.err.println("You set amount is incorrect: " + strBet[2]);
             return false;

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * Created by rado on 11/27/16.
  */
 @ContextConfiguration("/betService.xml")
-@Test(suiteName = "com/bet", groups = {"integration"})
+@Test(suiteName = "bet", groups = {"regression"})
 public class BetServiceTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
@@ -60,7 +60,7 @@ public class BetServiceTest extends AbstractTestNGSpringContextTests {
                 .allMatch(p -> !"".equals(p.getUserName()));
 
         playerService.getAllPlayers().stream()
-                .allMatch(p -> p.getAmount() == 0 && p.getBet() == 0);
+                .allMatch(p -> p.getTotalWin() == 0 && p.getTotalBet() == 0);
 
         File bonusFile = Paths.get("target/test-classes/files/bonusInputFile").toFile();
         File badFile = Paths.get("target/test-classes/files/badInputFile").toFile();
@@ -75,7 +75,7 @@ public class BetServiceTest extends AbstractTestNGSpringContextTests {
         assert playerService.getAllPlayers().stream()
                 .allMatch(p -> !"".equals(p.getUserName()));
         playerService.getAllPlayers().stream()
-                .allMatch(p -> p.getAmount() > 0 && p.getBet() > 0);
+                .allMatch(p -> p.getTotalWin() > 0 && p.getTotalBet() > 0);
 
         betService.initInputData(badFile.getAbsolutePath());
 

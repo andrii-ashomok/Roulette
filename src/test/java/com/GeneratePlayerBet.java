@@ -22,26 +22,22 @@ public class GeneratePlayerBet {
         Map<Player, Bet> customPlayBetMap = new HashMap<>();
         // Player variables
         String nickName;
-        short bet;
-        short amount;
+        int bet;
+        int amount;
         // Bet variables
         String newBet;
-        short value;
+        int value;
 
-        int index;
+
         for (int i=0; i < count; i++) {
             nickName = new BigInteger(130, random).toString(32);
 
-            index = ThreadLocalRandom.current().nextInt(0, RouletteService.BET_SIZE);
-            newBet = BetService.BET_LIST.get(index);
+            bet = ThreadLocalRandom.current().nextInt(0, RouletteService.BET_SIZE);
+            newBet = BetService.BET_LIST.get(bet);
 
-            bet = (short) index;
+            value = ThreadLocalRandom.current().nextInt(1, 100);
 
-            index = ThreadLocalRandom.current().nextInt(1, 100);
-            value = (short) index;
-
-            index = ThreadLocalRandom.current().nextInt(1, 100);
-            amount = (short) index;
+            amount = ThreadLocalRandom.current().nextInt(1, 100);
 
             customPlayBetMap.put(
                     new Player(nickName, amount, bet),

@@ -5,9 +5,7 @@ import com.user.Bet;
 import com.user.BetCategory;
 import com.user.Player;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,38 +23,25 @@ public class RouletteServiceImpl implements RouletteService {
 
     @Override
     public void scheduleRoulette() {
-        System.out.println("=========================");
-        
         int random = ThreadLocalRandom.current().nextInt(0, BET_SIZE);
         final WonBet wonBet = new WonBet(random);
 
-        Set<Bet> bets = playerService.getAndRemoveAllBets();
-
-        final List<String> playerNickNames = playerService.getAllPlayers()
-                .stream()
-                .map(Player::getUserName)
-                .collect(Collectors.toList());
-
-        if (isResultPrintable(bets)) {
-
-            printResult(bets.stream()
-                    .filter(bet -> playerNickNames.contains(bet.getUserName()))
-                    .collect(Collectors.toSet()), wonBet.getWonNumber());
+        if (playerService.getAllPlayers().isEmpty()) {
+            System.err.println("No players registered in the game");
+            return;
         }
 
-        System.out.println("=========================");
-    }
-
-    private boolean isResultPrintable(Set<Bet> bets) {
+        Set<Bet> bets = playerService.getAndRemoveAllBets();
         if (bets.isEmpty())
-            return false;
+            return;
 
-        Set<Player> players = playerService.getAllPlayers();
-        if (players.isEmpty())
-            return false;
+        bets.forEach(b -> isBetWon(b, wonBet));
+        System.out.println("=========================");
+        printResult(bets, wonBet.getWonNumber());
+        System.out.println("=========================");
 
-        return true;
     }
+
 
     @Override
     public boolean isBetWon(final Bet bet, final WonBet wonBet) {
@@ -68,7 +53,7 @@ public class RouletteServiceImpl implements RouletteService {
 
             if (wonBet.isEVEN()) {
                 bet.setWon(true);
-                bet.setWonRate((short) 2);
+                bet.setWonRate(2);
 
                 return true;
             }
@@ -77,45 +62,71 @@ public class RouletteServiceImpl implements RouletteService {
 
             if (wonBet.isODD()) {
                 bet.setWon(true);
-                bet.setWonRate((short) 2);
+                bet.setWonRate( 2);
 
                 return true;
             }
 
         } else if (wonBet.getWonNumber() == Integer.valueOf(bet.getNewBet())) {
             bet.setWon(true);
-            bet.setWonRate((short) 36);
+            bet.setWonRate(36);
 
             return true;
         }
 
-
         bet.setWon(false);
-        bet.setWonRate((short) 0);
-
+        bet.setWonRate(0);
 
         return bet.isWon();
     }
 
 
-    private void printResult(final Set<Bet> bets, int wonNumber) {
+    @Override
+    public void printResult(final Set<Bet> bets, int wonNumber) {
 
         System.out.println("Number: " + wonNumber);
         System.out.println("Player\t\t Bet\t Outcome\t Winnings");
         System.out.println("---------");
 
-        List<Bet> existsPlayerBets = bets.stream()
-                .filter(b -> playerService.getCustomerByName(b.getUserName()).isPresent())
-                .collect(Collectors.toList());
-
         String result;
-        for (Bet bet : existsPlayerBets) {
+        Player player;
+        Optional<Player> optional;
+        int totalBet;
+        int totalWin;
+        int wonValue;
+        List<Player> playerBet = new ArrayList<>();
 
+        for (Bet bet : bets) {
+
+            optional = playerService.getCustomerByName(bet.getUserName());
+
+            if (!optional.isPresent())
+                continue;
+
+            player = optional.get();
             result = bet.isWon() ? "WIN" : "LOSE";
 
+            wonValue = bet.getValue() * bet.getWonRate();
+            if (bet.isWon()) {
+                totalWin = wonValue + player.getTotalWin();
+                player.setTotalWin(totalWin);
+            }
+
+            totalBet = player.getTotalBet() + bet.getValue();
+            player.setTotalBet(totalBet);
+
+            playerBet.add(player);
+
             System.out.println(bet.getUserName() + "\t\t " + bet.getNewBet() + "\t\t "
-                    + result + "\t\t " + (bet.getValue() * bet.getWonRate()));
+                    + result + "\t\t " + wonValue);
         }
+
+        System.out.println();
+
+        System.out.println("Player\t\t Total Win\t Total Bet");
+        System.out.println("---------");
+        playerBet.forEach(p -> System.out.println(p.getUserName() + "\t\t "
+                + p.getTotalWin() + "\t\t " + p.getTotalBet()));
 
     }
 

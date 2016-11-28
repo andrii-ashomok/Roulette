@@ -15,6 +15,16 @@ public final class WonBet {
         this.isODD = checkODD();
     }
 
+    /**
+     * This rules create using information from
+     * https://en.wikipedia.org/wiki/Roulette
+     * chapter 'Roulette wheel number sequence'
+     * There you can find next information:
+     * In number ranges from 1 to 10 and 19 to 28, odd numbers are red and even are black.
+     * In ranges from 11 to 18 and 29 to 36, odd numbers are black and even are red.
+     * @return
+     */
+
     private boolean checkEVEN() {
         return wonNumber >= 19 && wonNumber <= 36;
 

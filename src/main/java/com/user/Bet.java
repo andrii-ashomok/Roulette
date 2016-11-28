@@ -7,11 +7,11 @@ public class Bet {
 
     private String userName;
     private String newBet;
-    private short value;
-    private short wonRate;
+    private int value;
+    private int wonRate;
     private boolean isWon;
 
-    public Bet(String userName, String newBet, short value) {
+    public Bet(String userName, String newBet, int value) {
         this.userName = userName;
         this.newBet = newBet;
         this.value = value;
@@ -33,19 +33,19 @@ public class Bet {
         this.newBet = newBet;
     }
 
-    public short getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(short value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
-    public short getWonRate() {
+    public int getWonRate() {
         return wonRate;
     }
 
-    public void setWonRate(short wonRate) {
+    public void setWonRate(int wonRate) {
         this.wonRate = wonRate;
     }
 

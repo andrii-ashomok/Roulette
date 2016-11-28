@@ -1,8 +1,6 @@
 package com.data;
 
 import com.GeneratePlayerBet;
-import com.data.PlayerService;
-import com.data.PlayerServiceImpl;
 import com.user.Bet;
 import com.user.Player;
 import org.testng.annotations.BeforeTest;
@@ -13,8 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.GeneratePlayerBet.generatePlayerBet;
 
 /**
  * Created by rado on 11/28/16.
@@ -29,7 +25,7 @@ public class PlayerServiceTest {
         playerService = new PlayerServiceImpl();
     }
 
-    @Test
+    @Test(priority = -1)
     public void testInit() {
         assert Objects.isNull(playerService.getAllPlayers());
         assert Objects.isNull(playerService.getAllBets());
@@ -72,7 +68,7 @@ public class PlayerServiceTest {
 
         assert playerService.getAllPlayers().stream()
                 .filter(p -> p.getUserName().equals(playerName)
-                                && p.getBet() == 0 && p.getAmount() == 0)
+                                && p.getTotalBet() == 0 && p.getTotalWin() == 0)
                 .findFirst()
                 .isPresent();
 
@@ -102,7 +98,7 @@ public class PlayerServiceTest {
 
         assert playerService.getAllPlayers().stream()
                 .filter(p -> p.getUserName().equals(playerName)
-                        && p.getBet() == betCount && p.getAmount() == amount)
+                        && p.getTotalBet() == betCount && p.getTotalWin() == amount)
                 .findFirst()
                 .isPresent();
     }
