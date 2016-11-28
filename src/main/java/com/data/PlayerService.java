@@ -11,6 +11,8 @@ import java.util.Set;
  */
 public interface PlayerService {
 
+    void init();
+
     void addBet(Bet bet);
 
     Set<Bet> getAndRemoveAllBets();
@@ -19,9 +21,13 @@ public interface PlayerService {
 
     void addPlayer(Player player);
 
-    void addPlayer(Set<Player> player);
+    void addPlayerAll(Set<Player> player);
 
     Set<Player> getAllPlayers();
 
     Optional<Player> getCustomerByName(String playerName);
+
+    void removeAllBets();
+
+    void removeAllPlayers();
 }

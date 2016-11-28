@@ -2,10 +2,13 @@ package bet;
 
 import com.bet.BetService;
 import com.data.PlayerService;
+import com.user.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -36,6 +39,12 @@ public class BetServiceTest extends AbstractTestNGSpringContextTests {
     @Value("${bonus.default.input.file.path}")
     private String defaultBonusFile;
 
+    @BeforeMethod
+    @AfterMethod
+    public void init() {
+        playerService.init();
+    }
+
     @Test
     public void testInitInputData() throws URISyntaxException, IOException {
         assert playerService.getAllPlayers().isEmpty();
@@ -49,12 +58,71 @@ public class BetServiceTest extends AbstractTestNGSpringContextTests {
         assert playerService.getAllPlayers().stream()
                 .allMatch(Objects::nonNull);
         assert playerService.getAllPlayers().stream()
-                .allMatch(s -> !"".equals(s));
+                .allMatch(p -> !"".equals(p.getUserName()));
+
+        playerService.getAllPlayers().stream()
+                .allMatch(p -> p.getAmount() == 0 && p.getBet() == 0);
 
         File bonusFile = Paths.get("target/test-classes/files/bonusInputFile").toFile();
-        File regularFile = Paths.get("target/test-classes/files/regularInputFile").toFile();
+        File badFile = Paths.get("target/test-classes/files/badInputFile").toFile();
 
+        betService.initInputData(bonusFile.getAbsolutePath());
+
+        lines = Files.lines(Paths.get(bonusFile.getAbsolutePath())).collect(Collectors.toList());
+
+        assert playerService.getAllPlayers().size() == lines.size();
+        assert playerService.getAllPlayers().stream()
+                .allMatch(Objects::nonNull);
+        assert playerService.getAllPlayers().stream()
+                .allMatch(p -> !"".equals(p.getUserName()));
+        playerService.getAllPlayers().stream()
+                .allMatch(p -> p.getAmount() > 0 && p.getBet() > 0);
+
+        betService.initInputData(badFile.getAbsolutePath());
+
+        assert playerService.getAllPlayers().size() == lines.size();
+        assert playerService.getAllPlayers().stream()
+                .allMatch(Objects::nonNull);
     }
 
+    @Test
+    public void testIsInitializedSuccess() {
+        assert !betService.isPlayersInitializedSuccess();
+
+        playerService.addPlayer(new Player("1"));
+
+        assert betService.isPlayersInitializedSuccess();
+    }
+
+    @Test
+    public void testIsBetValid() {
+        assert playerService.getAllPlayers().isEmpty();
+
+        String testBet = "";
+        assert !betService.isBetValid(testBet.split(BetService.BET_SPLIT));
+
+        testBet = " ";
+        assert !betService.isBetValid(testBet.split(BetService.BET_SPLIT));
+
+        testBet = "1";
+        assert !betService.isBetValid(testBet.split(BetService.BET_SPLIT));
+
+        String playerName = "John";
+        playerService.addPlayer(new Player(playerName));
+        assert playerService.getAllPlayers().size() == 1;
+
+        testBet = "1";
+        assert !betService.isBetValid(testBet.split(BetService.BET_SPLIT));
+
+        assert !betService.isBetValid(playerName.split(BetService.BET_SPLIT));
+        assert !betService.isBetValid(playerName.concat("  ").split(BetService.BET_SPLIT));
+
+        assert !betService.isBetValid(playerName.concat(" 56 4.0").split(BetService.BET_SPLIT));
+        assert !betService.isBetValid(playerName.concat(" EVEN A").split(BetService.BET_SPLIT));
+        assert !betService.isBetValid(playerName.concat(" EVEN, ").split(BetService.BET_SPLIT));
+        assert !betService.isBetValid(playerName.concat(" EVEN '").split(BetService.BET_SPLIT));
+        assert betService.isBetValid(playerName.concat(" EVEN 4.0").split(BetService.BET_SPLIT));
+
+    }
 
 }

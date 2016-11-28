@@ -24,10 +24,9 @@ public interface BetService {
         add("36"); add("EVEN"); add("ODD");
     }};
 
+    String BET_SPLIT = " ";
 
     List<String> EXIT_COMMAND_LIST = Arrays.asList("stop", "exit", "quit");
-
-    void startToTakeABet();
 
     default List<String> readInputData(String fileName) throws IOException, URISyntaxException {
         return Files.lines(Paths.get(fileName)).collect(Collectors.toList());
@@ -37,8 +36,12 @@ public interface BetService {
         return Objects.nonNull(lines) && !lines.isEmpty();
     }
 
+    void startToTakeABet();
+
     void initInputData(String fileName);
 
-    boolean isInitializedSuccess();
+    boolean isPlayersInitializedSuccess();
+
+    boolean isBetValid(String[] strBet);
 
 }

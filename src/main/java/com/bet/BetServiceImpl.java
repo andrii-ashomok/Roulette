@@ -42,6 +42,10 @@ public class BetServiceImpl implements BetService {
                     .filter(s -> Objects.nonNull(s) && !s.isEmpty())
                     .map(s -> {
                         String[] user = s.split(",");
+
+                        if (user.length < 1)
+                            return null;
+
                         String playerName = user[0].trim();
 
                         if ("".equals(playerName))
@@ -51,11 +55,23 @@ public class BetServiceImpl implements BetService {
 
                         if (user.length == 3) {
 
-                            if ("".equals(user[1]))
-                                player.setAmount(Short.valueOf(user[1]));
+                            try {
 
-                            if ("".equals(user[2]))
-                                player.setBet(Short.valueOf(user[2]));
+                                if (!"".equals(user[1]))
+                                    player.setAmount(Float.valueOf(user[1])
+                                            .shortValue());
+
+
+                                if (!"".equals(user[2]))
+                                    player.setBet(Float.valueOf(user[2])
+                                            .shortValue());
+
+                            } catch (NumberFormatException e) {
+                                System.err.println("Player has incorrect data: " + s
+                                        + " cause: " + e.getMessage());
+
+                                return null;
+                            }
                         }
 
                         return player;
@@ -64,7 +80,7 @@ public class BetServiceImpl implements BetService {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
 
-            playerService.addPlayer(players);
+            playerService.addPlayerAll(players);
 
             watch.stop();
 
@@ -80,7 +96,7 @@ public class BetServiceImpl implements BetService {
     }
 
     @Override
-    public boolean isInitializedSuccess() {
+    public boolean isPlayersInitializedSuccess() {
         return isInputDataValid(playerService.getAllPlayers());
     }
 
@@ -93,19 +109,18 @@ public class BetServiceImpl implements BetService {
         String line;
         while (EXIT_COMMAND_LIST.contains(line = s.next())) {
 
-            String[] strBet = line.split(" ");
+            String[] strBet = line.split(BET_SPLIT);
             if (isBetValid(strBet)) {
 
                 Bet bet = new Bet(strBet[0], strBet[1], Short.valueOf(strBet[2]));
                 playerService.addBet(bet);
 
             }
-
-            
         }
     }
 
-    private boolean isBetValid(String[] strBet) {
+    @Override
+    public boolean isBetValid(String[] strBet) {
         if (strBet.length != 3) {
             System.err.println("Inputted data was incorrect. Please try like in example: Tiki_Monkey 2 1.0");
             return false;
@@ -122,14 +137,22 @@ public class BetServiceImpl implements BetService {
         String bet = strBet[1].trim();
 
         if (!BET_LIST.contains(bet)) {
-            System.err.println("No such bet in this game: {}" + bet);
+            System.err.println("No such bet in this game: " + bet);
             return false;
         }
 
-        if ("".equals(strBet[2].trim()) && Short.valueOf(strBet[2]) > 0) {
+        if ("".equals(strBet[2].trim())) {
             System.err.println("You set amount: " + strBet[2] + ". Try like in example: Tiki_Monkey 2 1.0");
             return false;
         }
+
+        try {
+            Float.valueOf(strBet[2]).shortValue();
+        } catch (NumberFormatException e) {
+            System.err.println("You set amount is incorrect: " + strBet[2]);
+            return false;
+        }
+
 
         return true;
 

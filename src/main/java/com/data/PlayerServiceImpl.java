@@ -16,25 +16,36 @@ public class PlayerServiceImpl implements PlayerService {
     private Set<Bet> bets;
     private Set<Player> players;
 
+    @Override
     public void init() {
         bets = new HashSet<>();
         players = new HashSet<>();
     }
 
+    @Override
     public void addBet(Bet bet) {
         if (Objects.nonNull(bet))
             bets.add(bet);
     }
 
+    @Override
     public void addPlayer(Player player) {
-        if (Objects.nonNull(player))
+        if (Objects.nonNull(player)) {
+
+            if (players.contains(player))
+                players.remove(player);
+
             players.add(player);
+        }
     }
 
-    public void addPlayer(Set<Player> player) {
+    @Override
+    public void addPlayerAll(Set<Player> player) {
+        players.removeAll(player);
         players.addAll(player);
     }
 
+    @Override
     public Set<Bet> getAndRemoveAllBets() {
         Set<Bet> outputBets = new HashSet<>(bets);
         bets.clear();
@@ -44,7 +55,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Set<Bet> getAllBets() {
-        return new HashSet<>(bets);
+        return bets;
     }
 
     @Override
@@ -58,4 +69,13 @@ public class PlayerServiceImpl implements PlayerService {
                 .filter(customer -> customer.getUserName().equalsIgnoreCase(playerName))
                 .findFirst();
     }
+
+    public void removeAllPlayers() {
+        players.clear();
+    }
+
+    public void removeAllBets() {
+        bets.clear();
+    }
+
 }

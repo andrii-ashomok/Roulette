@@ -11,8 +11,6 @@ import java.util.Objects;
 public class Main {
 
     public static void main(String[] args) {
-        if (Objects.isNull(args) || args.length < 1)
-            throw new IllegalArgumentException("Input argument array is EMPTY");
 
         Thread.setDefaultUncaughtExceptionHandler(
                 (t, e) -> System.err.println("ERR001 - Uncaught exception occurred - " +
@@ -24,7 +22,7 @@ public class Main {
         BetService playerService = context.getBean(BetServiceImpl.class);
         playerService.initInputData(args[0]);
 
-        if (playerService.isInitializedSuccess()) {
+        if (playerService.isPlayersInitializedSuccess()) {
             context.start();
 
             playerService.startToTakeABet();

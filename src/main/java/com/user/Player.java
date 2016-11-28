@@ -51,8 +51,6 @@ public class Player {
 
         Player player = (Player) o;
 
-        if (bet != player.bet) return false;
-        if (amount != player.amount) return false;
         return userName.equals(player.userName);
 
     }
@@ -60,8 +58,6 @@ public class Player {
     @Override
     public int hashCode() {
         int result = userName.hashCode();
-        result = 31 * result + (int) bet;
-        result = 31 * result + amount;
         return result;
     }
 }

@@ -12,6 +12,7 @@ public class Bet {
     private boolean isWon;
 
     public Bet(String userName, String newBet, short value) {
+        this.userName = userName;
         this.newBet = newBet;
         this.value = value;
     }
@@ -62,18 +63,12 @@ public class Bet {
         if (o == null || getClass() != o.getClass()) return false;
 
         Bet bet = (Bet) o;
-
-        if (value != bet.value) return false;
-        if (!userName.equals(bet.userName)) return false;
-        return newBet.equals(bet.newBet);
-
+        return userName.equals(bet.userName);
     }
 
     @Override
     public int hashCode() {
         int result = userName.hashCode();
-        result = 31 * result + newBet.hashCode();
-        result = 31 * result + (int) value;
         return result;
     }
 }

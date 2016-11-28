@@ -3,13 +3,13 @@ package com.roulette;
 /**
  * Created by rado on 11/27/16.
  */
-final class WonBet {
+public final class WonBet {
 
     private final int wonNumber;
     private final boolean isEVEN;
     private final boolean isODD;
 
-    WonBet(final int wonNumber) {
+    public WonBet(final int wonNumber) {
         this.wonNumber = wonNumber;
         this.isEVEN = checkEVEN();
         this.isODD = checkODD();
