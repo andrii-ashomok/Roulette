@@ -1,8 +1,6 @@
-package roulette;
+package com.roulette;
 
 import com.data.PlayerService;
-import com.roulette.RouletteService;
-import com.roulette.WonBet;
 import com.user.Bet;
 import com.user.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,7 @@ import org.testng.annotations.Test;
  * Created by rado on 11/28/16.
  */
 @ContextConfiguration("/roulette.xml")
-@Test(suiteName = "roulette", groups = {"regression"})
+@Test(suiteName = "com/roulette", groups = {"regression"})
 public class RouletteServiceTest extends AbstractTestNGSpringContextTests {
 
     @Autowired

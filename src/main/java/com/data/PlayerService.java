@@ -21,7 +21,9 @@ public interface PlayerService {
 
     void addPlayer(Player player);
 
-    void addPlayerAll(Set<Player> player);
+    void addAllPlayer(Set<Player> player);
+
+    void addAllBet(Set<Bet> player);
 
     Set<Player> getAllPlayers();
 

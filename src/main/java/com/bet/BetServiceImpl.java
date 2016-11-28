@@ -80,7 +80,7 @@ public class BetServiceImpl implements BetService {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
 
-            playerService.addPlayerAll(players);
+            playerService.addAllPlayer(players);
 
             watch.stop();
 
@@ -107,7 +107,7 @@ public class BetServiceImpl implements BetService {
         Scanner s = new Scanner(System.in);
 
         String line;
-        while (EXIT_COMMAND_LIST.contains(line = s.next())) {
+        while (!EXIT_COMMAND_LIST.contains(line = s.nextLine())) {
 
             String[] strBet = line.split(BET_SPLIT);
             if (isBetValid(strBet)) {

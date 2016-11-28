@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by rado on 11/27/16.
@@ -24,15 +25,37 @@ public class RouletteServiceImpl implements RouletteService {
 
     @Override
     public void scheduleRoulette() {
+        System.out.println("=========================");
+        
         int random = ThreadLocalRandom.current().nextInt(0, BET_SIZE);
         final WonBet wonBet = new WonBet(random);
 
         Set<Bet> bets = playerService.getAndRemoveAllBets();
-        Set<Player> players = playerService.getAllPlayers();
 
-        if (!players.isEmpty()) {
-            printResult(bets, wonBet.getWonNumber());
+        final List<String> playerNickNames = playerService.getAllPlayers()
+                .stream()
+                .map(Player::getUserName)
+                .collect(Collectors.toList());
+
+        if (isResultPrintable(bets)) {
+
+            printResult(bets.stream()
+                    .filter(bet -> playerNickNames.contains(bet.getUserName()))
+                    .collect(Collectors.toSet()), wonBet.getWonNumber());
         }
+
+        System.out.println("=========================");
+    }
+
+    private boolean isResultPrintable(Set<Bet> bets) {
+        if (bets.isEmpty())
+            return false;
+
+        Set<Player> players = playerService.getAllPlayers();
+        if (players.isEmpty())
+            return false;
+
+        return true;
     }
 
     @Override

@@ -1,6 +1,5 @@
-package bet;
+package com.bet;
 
-import com.bet.BetService;
 import com.data.PlayerService;
 import com.user.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
  * Created by rado on 11/27/16.
  */
 @ContextConfiguration("/betService.xml")
-@Test(suiteName = "bet", groups = {"integration"})
+@Test(suiteName = "com/bet", groups = {"integration"})
 public class BetServiceTest extends AbstractTestNGSpringContextTests {
 
     @Autowired

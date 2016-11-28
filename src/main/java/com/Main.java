@@ -1,3 +1,5 @@
+package com;
+
 import com.bet.BetService;
 import com.bet.BetServiceImpl;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -20,7 +22,11 @@ public class Main {
         context.registerShutdownHook();
 
         BetService playerService = context.getBean(BetServiceImpl.class);
-        playerService.initInputData(args[0]);
+
+        if (Objects.isNull(args) || args.length < 1)
+            playerService.initInputData(null);
+        else
+            playerService.initInputData(args[0]);
 
         if (playerService.isPlayersInitializedSuccess()) {
             context.start();

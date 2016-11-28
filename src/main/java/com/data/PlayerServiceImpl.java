@@ -24,8 +24,13 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public void addBet(Bet bet) {
-        if (Objects.nonNull(bet))
-            bets.add(bet);
+        if (Objects.nonNull(bet)) {
+            if (bets.contains(bet))
+                System.err.println("Bet for player " + bet.getUserName()
+                                    + " already made");
+            else
+                bets.add(bet);
+        }
     }
 
     @Override
@@ -40,10 +45,17 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public void addPlayerAll(Set<Player> player) {
-        players.removeAll(player);
-        players.addAll(player);
+    public void addAllPlayer(Set<Player> player) {
+        if (Objects.nonNull(player))
+            players.addAll(player);
     }
+
+    @Override
+    public void addAllBet(Set<Bet> bet) {
+        if (Objects.nonNull(bet))
+            bets.addAll(bet);
+    }
+
 
     @Override
     public Set<Bet> getAndRemoveAllBets() {
@@ -65,7 +77,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> getCustomerByName(String playerName) {
+
         return players.stream()
+                .filter(Objects::nonNull)
                 .filter(customer -> customer.getUserName().equalsIgnoreCase(playerName))
                 .findFirst();
     }
